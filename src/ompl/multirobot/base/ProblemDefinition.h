@@ -530,7 +530,7 @@ namespace ompl
                 unsigned int individualCount_{0u};
 
                 /** \brief Boolean that indicates that there are no additional individuals to add */
-                bool locked_;
+                bool locked_{false};
 
                 // /** \brief A Representation of a proof of non-existence of a solution for this problem definition */
                 // SolutionNonExistenceProofPtr nonExistenceProof_;
