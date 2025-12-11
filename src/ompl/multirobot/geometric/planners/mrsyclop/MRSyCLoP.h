@@ -190,6 +190,62 @@ namespace ompl
 
                 /** \brief Goal region indices for each robot */
                 std::vector<int> goalRegions_;
+
+                /** \brief Leads (sequence of regions) for each robot */
+                std::vector<std::vector<int>> leads_;
+
+                /** \brief Current high-level timestep for each robot */
+                std::vector<unsigned int> currentTimestep_;
+
+                /** \brief RRT tree segment structure */
+                struct RRTSegment
+                {
+                    ompl::base::PlannerPtr planner;  // RRT planner for this segment
+                    std::vector<unsigned int> robotIndices;  // Which robots (empty = all, or specific indices for composite)
+                    int regionId;  // Which region this segment is in
+                    unsigned int timestep;  // Which high-level timestep
+                    ompl::base::State *startState{nullptr};  // Starting state for this segment
+                    ompl::base::State *endState{nullptr};  // Ending state (state that reached next region)
+                    bool isComposite{false};  // True if this is a composite space segment
+                };
+
+                /** \brief RRT segments for each robot (or robot group) */
+                std::vector<std::vector<RRTSegment>> segments_;
+
+                /** \brief Current state for each robot */
+                std::vector<ompl::base::State *> currentStates_;
+
+                /** \brief Check if a state is near the boundary of the next region in the lead */
+                bool isNearNextRegion(unsigned int robotIdx, ompl::base::State *state);
+
+                /** \brief Compute lead for a specific robot */
+                bool computeLeadForRobot(unsigned int robotIdx, std::vector<int> &lead);
+
+                /** \brief Create a composite space information for a set of robots */
+                ompl::base::SpaceInformationPtr createCompositeSpaceInfo(const std::vector<unsigned int> &robotIndices);
+
+                /** \brief Create a composite state from individual states */
+                ompl::base::State *createCompositeState(const std::vector<unsigned int> &robotIndices,
+                                                        const std::vector<ompl::base::State *> &individualStates,
+                                                        const ompl::base::SpaceInformationPtr &compositeSpace);
+
+                /** \brief Extract individual state from composite state */
+                void extractIndividualState(ompl::base::State *compositeState, unsigned int componentIndex,
+                                           ompl::base::State *individualState,
+                                           const ompl::base::SpaceInformationPtr &compositeSpace);
+
+                /** \brief Grow RRT in individual space */
+                bool growIndividualRRT(unsigned int robotIdx, int regionId, RRTSegment &segment);
+
+                /** \brief Grow RRT in composite space */
+                bool growCompositeRRT(const std::vector<unsigned int> &robotIndices, int regionId, RRTSegment &segment);
+
+                /** \brief Function to compute lead (modular for future coordination) */
+                using LeadComputeFn = std::function<bool(unsigned int, std::vector<int> &)>;
+                LeadComputeFn leadComputeFn_;
+
+                /** \brief Random number generator */
+                ompl::RNG rng_;
             };
         }
     }
