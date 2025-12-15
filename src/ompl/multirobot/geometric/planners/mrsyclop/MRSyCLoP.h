@@ -98,6 +98,12 @@ namespace ompl
                     return probShortestPath_;
                 }
 
+                /** \brief Get the computed leads for all robots */
+                const std::vector<std::vector<int>> &getLeads() const
+                {
+                    return leads_;
+                }
+
             protected:
                 /** \brief Free the memory allocated by this planner */
                 void freeMemory();
@@ -214,6 +220,9 @@ namespace ompl
 
                 /** \brief Current state for each robot */
                 std::vector<ompl::base::State *> currentStates_;
+
+                /** \brief Path waypoints for each robot (captured at key moments) */
+                std::vector<std::vector<ompl::base::State *>> pathWaypoints_;
 
                 /** \brief Check if a state is near the boundary of the next region in the lead */
                 bool isNearNextRegion(unsigned int robotIdx, ompl::base::State *state);
