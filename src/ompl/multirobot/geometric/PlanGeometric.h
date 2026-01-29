@@ -202,6 +202,12 @@ namespace ompl
                 //     as with operator=() */
                 // void overlay(const PathGeometric &over, unsigned int startIndex = 0);
 
+                /** \brief Get the path for a specific individual */
+                ompl::geometric::PathGeometricPtr &getPath(unsigned int index)
+                {
+                    return paths_[index];
+                }
+
                 /** \brief Append \e path to the end of this plan. The memory for \e path is copied. */
                 void append(const ompl::geometric::PathGeometricPtr &path);
 
