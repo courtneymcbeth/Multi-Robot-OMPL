@@ -2,16 +2,17 @@ cmake_minimum_required(VERSION 3.5)
 project(ompl VERSION 1.6.0 LANGUAGES CXX)
 set(OMPL_ABI_VERSION 17)
 
-# set the default build type
-if (NOT CMAKE_BUILD_TYPE)
-    # By default, use Release mode
-    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Type of build" FORCE)
-
-    # On 32bit architectures, use RelWithDebInfo
-    if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_SIZEOF_VOID_P EQUAL 4)
-        set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Type of build" FORCE)
-    endif()
-endif()
+# Build type is controlled by the parent project (mr-syclop) or build.sh
+# Do not override here to avoid interfering with the parent's CMAKE_BUILD_TYPE
+# if (NOT CMAKE_BUILD_TYPE)
+#     # By default, use Release mode
+#     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Type of build" FORCE)
+#
+#     # On 32bit architectures, use RelWithDebInfo
+#     if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_SIZEOF_VOID_P EQUAL 4)
+#         set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Type of build" FORCE)
+#     endif()
+# endif()
 
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 

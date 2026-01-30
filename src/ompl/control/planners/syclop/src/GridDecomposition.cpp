@@ -197,9 +197,11 @@ int ompl::control::GridDecomposition::coordToRegion(const std::vector<double> &c
     {
         index = (int)(length_ * (coord[i] - bounds_.low[i]) / (bounds_.high[i] - bounds_.low[i]));
 
-        // There is an edge case when the coordinate lies exactly on the upper bound where
-        // the region index will be out of bounds.  Ensure index lies within [0, length_)
-        if (index >= length_)
+        // Clamp index to [0, length_) so that out-of-bounds coordinates
+        // map to boundary regions instead of producing negative region IDs.
+        if (index < 0)
+            index = 0;
+        else if (index >= length_)
             index = length_ - 1;
 
         region += factor * index;
@@ -216,9 +218,11 @@ void ompl::control::GridDecomposition::coordToGridCoord(const std::vector<double
     {
         gridCoord[i] = (int)(length_ * (coord[i] - bounds_.low[i]) / (bounds_.high[i] - bounds_.low[i]));
 
-        // There is an edge case when the coordinate lies exactly on the upper bound where
-        // the region index will be out of bounds.  Ensure index lies within [0, length_)
-        if (gridCoord[i] >= length_)
+        // Clamp index to [0, length_) so that out-of-bounds coordinates
+        // map to boundary regions instead of producing negative region IDs.
+        if (gridCoord[i] < 0)
+            gridCoord[i] = 0;
+        else if (gridCoord[i] >= length_)
             gridCoord[i] = length_ - 1;
     }
 }
