@@ -88,7 +88,7 @@ find_path(PYTHON_INCLUDE_DIRS "Python.h"
     DOC "Python include directories" NO_DEFAULT_PATH)
 
 execute_process(COMMAND "${PYTHON_EXEC}" "-c"
-    "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
+    "import sysconfig; print(sysconfig.get_path('purelib'))"
     OUTPUT_VARIABLE PYTHON_SITE_MODULES
     OUTPUT_STRIP_TRAILING_WHITESPACE)
 

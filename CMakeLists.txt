@@ -31,8 +31,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 set(OMPL_CMAKE_UTIL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules"
     CACHE FILEPATH "Path to directory with auxiliary CMake scripts for OMPL")
 set(OMPL_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/src;${CMAKE_CURRENT_BINARY_DIR}/src")
-set(OMPL_DEMO_INSTALL_DIR "${CMAKE_INSTALL_DATAROOTDIR}/ompl/demos"
-    CACHE STRING "Relative path to directory where demos will be installed")
+# set(OMPL_DEMO_INSTALL_DIR "${CMAKE_INSTALL_DATAROOTDIR}/ompl/demos"
+#     CACHE STRING "Relative path to directory where demos will be installed")
 
 include_directories("${OMPL_INCLUDE_DIRS}")
 
@@ -50,7 +50,7 @@ set_package_properties(Boost PROPERTIES
     PURPOSE "Used throughout OMPL for data serialization, graphs, etc.")
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_NO_BOOST_CMAKE ON)
-find_package(Boost 1.58 QUIET REQUIRED COMPONENTS serialization filesystem system program_options)
+find_package(Boost 1.58 QUIET REQUIRED COMPONENTS serialization filesystem program_options)
 include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 
 # Add support in Boost::Python for std::shared_ptr
@@ -111,6 +111,9 @@ set_package_properties(Eigen3 PROPERTIES
     URL "http://eigen.tuxfamily.org"
     PURPOSE "A linear algebra library used throughout OMPL.")
 find_package(Eigen3 REQUIRED)
+if(NOT EIGEN3_INCLUDE_DIR AND TARGET Eigen3::Eigen)
+    get_target_property(EIGEN3_INCLUDE_DIR Eigen3::Eigen INTERFACE_INCLUDE_DIRECTORIES)
+endif()
 include_directories(SYSTEM "${EIGEN3_INCLUDE_DIR}")
 
 set_package_properties(MORSE PROPERTIES
@@ -180,7 +183,7 @@ find_program(R_EXEC R)
 add_subdirectory(src)
 add_subdirectory(py-bindings)
 add_subdirectory(tests)
-add_subdirectory(demos)
+# add_subdirectory(demos)
 add_subdirectory(scripts)
 add_subdirectory(doc)
 
