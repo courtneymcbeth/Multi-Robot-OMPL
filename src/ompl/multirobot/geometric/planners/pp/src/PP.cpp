@@ -91,7 +91,10 @@ void ompl::multirobot::geometric::PP::addPathAsDynamicObstacles(const unsigned i
     {
         for (unsigned int t = 0; t < path->getStates().size(); t++)
         {
-            si_->addDynamicObstacleForIndividual(r, individual, path->getState(t), (double)t);
+            // Clone the state so dynObstacles_ takes ownership; the path may be
+            // destroyed before dynamic obstacle checking completes for later robots.
+            auto state = si_->getIndividual(individual)->cloneState(path->getState(t));
+            si_->addDynamicObstacleForIndividual(r, individual, state, (double)t);
         }
     }
 }
