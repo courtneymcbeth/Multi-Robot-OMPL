@@ -62,6 +62,7 @@ namespace ompl
             public:
                 /** \brief Constructor */
                 PP(const SpaceInformationPtr &si, ompl::base::PlannerPtr solver = nullptr);
+                // PP(const multirobot::control::SpaceInformationPtr &si, ompl::base::PlannerPtr solver = nullptr);
 
                 /** \brief Destructor */
                 ~PP() override;
