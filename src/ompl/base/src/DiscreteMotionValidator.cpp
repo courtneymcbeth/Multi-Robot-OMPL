@@ -146,14 +146,6 @@ bool ompl::base::DiscreteMotionValidator::checkMotion(const State *s1, const Sta
 
 bool ompl::base::DiscreteMotionValidator::checkMotionTest(const State *s1, const State *s2, unsigned int step) const
 {
-    // std::cout << step << std::endl;
-    /* assume motion starts in a valid configuration so s1 is valid */
-    if (!si_->isValid(s2, ((double)step + 1))) // t_true(s2) = step + (double)1
-    {
-        invalid_++;
-        return false;
-    }
-
     bool result = true;
     int nd = stateSpace_->validSegmentCount(s1, s2);
 
@@ -166,18 +158,17 @@ bool ompl::base::DiscreteMotionValidator::checkMotionTest(const State *s1, const
         /* temporary storage for the checked state */
         State *test = si_->allocState();
 
-        /* repeatedly subdivide the path segment in the middle (and check the middle) */
-        int nxtStep = 0;
+        /* repeatedly subdivide the path segment in the middle (and check the middle).
+           Each intermediate state at spatial index mid will land at path index step+mid,
+           so check it against the dynamic obstacle at that exact time. */
         while (!pos.empty())
         {
-            nxtStep++;
             std::pair<int, int> x = pos.front();
 
             int mid = (x.first + x.second) / 2;
-            double t = (double)mid / (double)nd;
-            stateSpace_->interpolate(s1, s2, t, test); // t_true(test) = step + (double)mid / (double)nd
+            stateSpace_->interpolate(s1, s2, (double)mid / (double)nd, test);
 
-            if (!si_->isValid(test, step + nxtStep))
+            if (!si_->isValid(test, (double)(step + mid)))
             {
                 result = false;
                 break;
@@ -193,6 +184,10 @@ bool ompl::base::DiscreteMotionValidator::checkMotionTest(const State *s1, const
 
         si_->freeState(test);
     }
+
+    /* endpoint lands at path index step+nd */
+    if (result && !si_->isValid(s2, (double)(step + nd)))
+        result = false;
 
     if (result)
         valid_++;
