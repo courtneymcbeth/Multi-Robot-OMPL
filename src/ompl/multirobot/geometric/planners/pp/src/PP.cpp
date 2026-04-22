@@ -97,7 +97,7 @@ void ompl::multirobot::geometric::PP::addPathAsDynamicObstacles(const unsigned i
             si_->addDynamicObstacleForIndividual(r, individual, state, (double)t);
         }
         // Robot stays at goal indefinitely — register goal state for future time steps.
-        const unsigned int max_steps = 10000;
+        const unsigned int max_steps = 100000;
         for (unsigned int s = 0; s < max_steps; s++)
         {
             auto goal_state = si_->getIndividual(individual)->cloneState(path->getStates().back());
